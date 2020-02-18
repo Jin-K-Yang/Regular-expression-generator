@@ -12,3 +12,15 @@ make
 ```cmd
 make clean
 ```
+# Test
+```C
+#include <stdio.h>
+#include "y.tab.c"
+#include "lex.yy.c"
+
+yyparse();
+```
+```cmd
+gcc test.c
+./a.out
+```
