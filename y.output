@@ -1,0 +1,551 @@
+終端機在文法中未使用
+
+   DOT
+   '/'
+   '&'
+   '|'
+   '^'
+   '@'
+   '~'
+   '!'
+
+
+狀態 3 衝突：3 項偏移/縮減，4 項縮減/縮減
+狀態 9 衝突：2 項偏移/縮減，1 項縮減/縮減
+狀態 10 衝突：2 項偏移/縮減，1 項縮減/縮減
+狀態 11 衝突：2 項偏移/縮減，1 項縮減/縮減
+
+
+文法
+
+    0 $accept: program $end
+
+    1 program: program statement '\n'
+    2        | %empty
+
+    3 statement: expr size
+
+    4 expr: LEFT_M_P number lowercase uppercase RIGHT_M_P
+    5     | LEFT_M_P number uppercase lowercase RIGHT_M_P
+    6     | LEFT_M_P lowercase number uppercase RIGHT_M_P
+    7     | LEFT_M_P lowercase uppercase number RIGHT_M_P
+    8     | LEFT_M_P uppercase lowercase number RIGHT_M_P
+    9     | LEFT_M_P uppercase number lowercase RIGHT_M_P
+
+   10 size: INTEGER
+   11     | LEFT_B_P size RIGHT_B_P
+   12     | LEFT_B_P size COMMA size RIGHT_B_P
+   13     | LEFT_B_P size COMMA RIGHT_B_P
+   14     | '+'
+   15     | '*'
+
+   16 number: INTEGER
+   17       | %empty
+   18       | INTEGER '-' INTEGER
+
+   19 lowercase: LOWERCASE
+   20          | %empty
+   21          | LOWERCASE '-' LOWERCASE
+
+   22 uppercase: UPPERCASE
+   23          | %empty
+   24          | UPPERCASE '-' UPPERCASE
+
+
+終結語詞，附有它們出現處的規則
+
+$end (0) 0
+'\n' (10) 1
+'!' (33)
+'&' (38)
+'*' (42) 15
+'+' (43) 14
+'-' (45) 18 21 24
+'/' (47)
+'@' (64)
+'^' (94)
+'|' (124)
+'~' (126)
+error (256)
+INTEGER (258) 10 16 18
+LOWERCASE (259) 19 21
+UPPERCASE (260) 22 24
+LEFT_M_P (261) 4 5 6 7 8 9
+RIGHT_M_P (262) 4 5 6 7 8 9
+LEFT_B_P (263) 11 12 13
+RIGHT_B_P (264) 11 12 13
+COMMA (265) 12 13
+DOT (266)
+
+
+非終結語詞，附有它們出現處的規則
+
+$accept (23)
+    於左側： 0
+program (24)
+    於左側： 1 2, 於右側： 0 1
+statement (25)
+    於左側： 3, 於右側： 1
+expr (26)
+    於左側： 4 5 6 7 8 9, 於右側： 3
+size (27)
+    於左側： 10 11 12 13 14 15, 於右側： 3 11 12 13
+number (28)
+    於左側： 16 17 18, 於右側： 4 5 6 7 8 9
+lowercase (29)
+    於左側： 19 20 21, 於右側： 4 5 6 7 8 9
+uppercase (30)
+    於左側： 22 23 24, 於右側： 4 5 6 7 8 9
+
+
+狀態 0
+
+    0 $accept: . program $end
+
+    $預設  使用規則 2 以縮減 (program)
+
+    program  進入狀態 1
+
+
+狀態 1
+
+    0 $accept: program . $end
+    1 program: program . statement '\n'
+
+    $end      偏移，並進入狀態 2
+    LEFT_M_P  偏移，並進入狀態 3
+
+    statement  進入狀態 4
+    expr       進入狀態 5
+
+
+狀態 2
+
+    0 $accept: program $end .
+
+    $預設  接受
+
+
+狀態 3
+
+    4 expr: LEFT_M_P . number lowercase uppercase RIGHT_M_P
+    5     | LEFT_M_P . number uppercase lowercase RIGHT_M_P
+    6     | LEFT_M_P . lowercase number uppercase RIGHT_M_P
+    7     | LEFT_M_P . lowercase uppercase number RIGHT_M_P
+    8     | LEFT_M_P . uppercase lowercase number RIGHT_M_P
+    9     | LEFT_M_P . uppercase number lowercase RIGHT_M_P
+
+    INTEGER    偏移，並進入狀態 6
+    LOWERCASE  偏移，並進入狀態 7
+    UPPERCASE  偏移，並進入狀態 8
+
+    INTEGER    [使用規則 20 以縮減 (lowercase)]
+    INTEGER    [使用規則 23 以縮減 (uppercase)]
+    LOWERCASE  [使用規則 17 以縮減 (number)]
+    LOWERCASE  [使用規則 23 以縮減 (uppercase)]
+    UPPERCASE  [使用規則 17 以縮減 (number)]
+    UPPERCASE  [使用規則 20 以縮減 (lowercase)]
+    RIGHT_M_P  使用規則 17 以縮減 (number)
+    RIGHT_M_P  [使用規則 20 以縮減 (lowercase)]
+    RIGHT_M_P  [使用規則 23 以縮減 (uppercase)]
+    $預設    使用規則 17 以縮減 (number)
+
+    number     進入狀態 9
+    lowercase  進入狀態 10
+    uppercase  進入狀態 11
+
+
+狀態 4
+
+    1 program: program statement . '\n'
+
+    '\n'  偏移，並進入狀態 12
+
+
+狀態 5
+
+    3 statement: expr . size
+
+    INTEGER   偏移，並進入狀態 13
+    LEFT_B_P  偏移，並進入狀態 14
+    '+'       偏移，並進入狀態 15
+    '*'       偏移，並進入狀態 16
+
+    size  進入狀態 17
+
+
+狀態 6
+
+   16 number: INTEGER .
+   18       | INTEGER . '-' INTEGER
+
+    '-'  偏移，並進入狀態 18
+
+    $預設  使用規則 16 以縮減 (number)
+
+
+狀態 7
+
+   19 lowercase: LOWERCASE .
+   21          | LOWERCASE . '-' LOWERCASE
+
+    '-'  偏移，並進入狀態 19
+
+    $預設  使用規則 19 以縮減 (lowercase)
+
+
+狀態 8
+
+   22 uppercase: UPPERCASE .
+   24          | UPPERCASE . '-' UPPERCASE
+
+    '-'  偏移，並進入狀態 20
+
+    $預設  使用規則 22 以縮減 (uppercase)
+
+
+狀態 9
+
+    4 expr: LEFT_M_P number . lowercase uppercase RIGHT_M_P
+    5     | LEFT_M_P number . uppercase lowercase RIGHT_M_P
+
+    LOWERCASE  偏移，並進入狀態 7
+    UPPERCASE  偏移，並進入狀態 8
+
+    LOWERCASE  [使用規則 23 以縮減 (uppercase)]
+    UPPERCASE  [使用規則 20 以縮減 (lowercase)]
+    RIGHT_M_P  使用規則 20 以縮減 (lowercase)
+    RIGHT_M_P  [使用規則 23 以縮減 (uppercase)]
+    $預設    使用規則 20 以縮減 (lowercase)
+
+    lowercase  進入狀態 21
+    uppercase  進入狀態 22
+
+
+狀態 10
+
+    6 expr: LEFT_M_P lowercase . number uppercase RIGHT_M_P
+    7     | LEFT_M_P lowercase . uppercase number RIGHT_M_P
+
+    INTEGER    偏移，並進入狀態 6
+    UPPERCASE  偏移，並進入狀態 8
+
+    INTEGER    [使用規則 23 以縮減 (uppercase)]
+    UPPERCASE  [使用規則 17 以縮減 (number)]
+    RIGHT_M_P  使用規則 17 以縮減 (number)
+    RIGHT_M_P  [使用規則 23 以縮減 (uppercase)]
+    $預設    使用規則 17 以縮減 (number)
+
+    number     進入狀態 23
+    uppercase  進入狀態 24
+
+
+狀態 11
+
+    8 expr: LEFT_M_P uppercase . lowercase number RIGHT_M_P
+    9     | LEFT_M_P uppercase . number lowercase RIGHT_M_P
+
+    INTEGER    偏移，並進入狀態 6
+    LOWERCASE  偏移，並進入狀態 7
+
+    INTEGER    [使用規則 20 以縮減 (lowercase)]
+    LOWERCASE  [使用規則 17 以縮減 (number)]
+    RIGHT_M_P  使用規則 17 以縮減 (number)
+    RIGHT_M_P  [使用規則 20 以縮減 (lowercase)]
+    $預設    使用規則 17 以縮減 (number)
+
+    number     進入狀態 25
+    lowercase  進入狀態 26
+
+
+狀態 12
+
+    1 program: program statement '\n' .
+
+    $預設  使用規則 1 以縮減 (program)
+
+
+狀態 13
+
+   10 size: INTEGER .
+
+    $預設  使用規則 10 以縮減 (size)
+
+
+狀態 14
+
+   11 size: LEFT_B_P . size RIGHT_B_P
+   12     | LEFT_B_P . size COMMA size RIGHT_B_P
+   13     | LEFT_B_P . size COMMA RIGHT_B_P
+
+    INTEGER   偏移，並進入狀態 13
+    LEFT_B_P  偏移，並進入狀態 14
+    '+'       偏移，並進入狀態 15
+    '*'       偏移，並進入狀態 16
+
+    size  進入狀態 27
+
+
+狀態 15
+
+   14 size: '+' .
+
+    $預設  使用規則 14 以縮減 (size)
+
+
+狀態 16
+
+   15 size: '*' .
+
+    $預設  使用規則 15 以縮減 (size)
+
+
+狀態 17
+
+    3 statement: expr size .
+
+    $預設  使用規則 3 以縮減 (statement)
+
+
+狀態 18
+
+   18 number: INTEGER '-' . INTEGER
+
+    INTEGER  偏移，並進入狀態 28
+
+
+狀態 19
+
+   21 lowercase: LOWERCASE '-' . LOWERCASE
+
+    LOWERCASE  偏移，並進入狀態 29
+
+
+狀態 20
+
+   24 uppercase: UPPERCASE '-' . UPPERCASE
+
+    UPPERCASE  偏移，並進入狀態 30
+
+
+狀態 21
+
+    4 expr: LEFT_M_P number lowercase . uppercase RIGHT_M_P
+
+    UPPERCASE  偏移，並進入狀態 8
+
+    $預設  使用規則 23 以縮減 (uppercase)
+
+    uppercase  進入狀態 31
+
+
+狀態 22
+
+    5 expr: LEFT_M_P number uppercase . lowercase RIGHT_M_P
+
+    LOWERCASE  偏移，並進入狀態 7
+
+    $預設  使用規則 20 以縮減 (lowercase)
+
+    lowercase  進入狀態 32
+
+
+狀態 23
+
+    6 expr: LEFT_M_P lowercase number . uppercase RIGHT_M_P
+
+    UPPERCASE  偏移，並進入狀態 8
+
+    $預設  使用規則 23 以縮減 (uppercase)
+
+    uppercase  進入狀態 33
+
+
+狀態 24
+
+    7 expr: LEFT_M_P lowercase uppercase . number RIGHT_M_P
+
+    INTEGER  偏移，並進入狀態 6
+
+    $預設  使用規則 17 以縮減 (number)
+
+    number  進入狀態 34
+
+
+狀態 25
+
+    9 expr: LEFT_M_P uppercase number . lowercase RIGHT_M_P
+
+    LOWERCASE  偏移，並進入狀態 7
+
+    $預設  使用規則 20 以縮減 (lowercase)
+
+    lowercase  進入狀態 35
+
+
+狀態 26
+
+    8 expr: LEFT_M_P uppercase lowercase . number RIGHT_M_P
+
+    INTEGER  偏移，並進入狀態 6
+
+    $預設  使用規則 17 以縮減 (number)
+
+    number  進入狀態 36
+
+
+狀態 27
+
+   11 size: LEFT_B_P size . RIGHT_B_P
+   12     | LEFT_B_P size . COMMA size RIGHT_B_P
+   13     | LEFT_B_P size . COMMA RIGHT_B_P
+
+    RIGHT_B_P  偏移，並進入狀態 37
+    COMMA      偏移，並進入狀態 38
+
+
+狀態 28
+
+   18 number: INTEGER '-' INTEGER .
+
+    $預設  使用規則 18 以縮減 (number)
+
+
+狀態 29
+
+   21 lowercase: LOWERCASE '-' LOWERCASE .
+
+    $預設  使用規則 21 以縮減 (lowercase)
+
+
+狀態 30
+
+   24 uppercase: UPPERCASE '-' UPPERCASE .
+
+    $預設  使用規則 24 以縮減 (uppercase)
+
+
+狀態 31
+
+    4 expr: LEFT_M_P number lowercase uppercase . RIGHT_M_P
+
+    RIGHT_M_P  偏移，並進入狀態 39
+
+
+狀態 32
+
+    5 expr: LEFT_M_P number uppercase lowercase . RIGHT_M_P
+
+    RIGHT_M_P  偏移，並進入狀態 40
+
+
+狀態 33
+
+    6 expr: LEFT_M_P lowercase number uppercase . RIGHT_M_P
+
+    RIGHT_M_P  偏移，並進入狀態 41
+
+
+狀態 34
+
+    7 expr: LEFT_M_P lowercase uppercase number . RIGHT_M_P
+
+    RIGHT_M_P  偏移，並進入狀態 42
+
+
+狀態 35
+
+    9 expr: LEFT_M_P uppercase number lowercase . RIGHT_M_P
+
+    RIGHT_M_P  偏移，並進入狀態 43
+
+
+狀態 36
+
+    8 expr: LEFT_M_P uppercase lowercase number . RIGHT_M_P
+
+    RIGHT_M_P  偏移，並進入狀態 44
+
+
+狀態 37
+
+   11 size: LEFT_B_P size RIGHT_B_P .
+
+    $預設  使用規則 11 以縮減 (size)
+
+
+狀態 38
+
+   12 size: LEFT_B_P size COMMA . size RIGHT_B_P
+   13     | LEFT_B_P size COMMA . RIGHT_B_P
+
+    INTEGER    偏移，並進入狀態 13
+    LEFT_B_P   偏移，並進入狀態 14
+    RIGHT_B_P  偏移，並進入狀態 45
+    '+'        偏移，並進入狀態 15
+    '*'        偏移，並進入狀態 16
+
+    size  進入狀態 46
+
+
+狀態 39
+
+    4 expr: LEFT_M_P number lowercase uppercase RIGHT_M_P .
+
+    $預設  使用規則 4 以縮減 (expr)
+
+
+狀態 40
+
+    5 expr: LEFT_M_P number uppercase lowercase RIGHT_M_P .
+
+    $預設  使用規則 5 以縮減 (expr)
+
+
+狀態 41
+
+    6 expr: LEFT_M_P lowercase number uppercase RIGHT_M_P .
+
+    $預設  使用規則 6 以縮減 (expr)
+
+
+狀態 42
+
+    7 expr: LEFT_M_P lowercase uppercase number RIGHT_M_P .
+
+    $預設  使用規則 7 以縮減 (expr)
+
+
+狀態 43
+
+    9 expr: LEFT_M_P uppercase number lowercase RIGHT_M_P .
+
+    $預設  使用規則 9 以縮減 (expr)
+
+
+狀態 44
+
+    8 expr: LEFT_M_P uppercase lowercase number RIGHT_M_P .
+
+    $預設  使用規則 8 以縮減 (expr)
+
+
+狀態 45
+
+   13 size: LEFT_B_P size COMMA RIGHT_B_P .
+
+    $預設  使用規則 13 以縮減 (size)
+
+
+狀態 46
+
+   12 size: LEFT_B_P size COMMA size . RIGHT_B_P
+
+    RIGHT_B_P  偏移，並進入狀態 47
+
+
+狀態 47
+
+   12 size: LEFT_B_P size COMMA size RIGHT_B_P .
+
+    $預設  使用規則 12 以縮減 (size)
